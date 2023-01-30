@@ -1,0 +1,12 @@
+spring:
+  config:
+    activate:
+      on-profile:
+        common
+
+secret:
+  path: ${secretPath}
+
+server:
+  servlet:
+    context-path: /api/v1
