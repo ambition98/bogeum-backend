@@ -8,14 +8,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 import xyz.bogeum.auth.JwtAuthEntryPoint
-import xyz.bogeum.filter.JwtAuthenticationFilter
-import xyz.bogeum.auth.JwtProvider
 import xyz.bogeum.enum.UserRole
 import xyz.bogeum.filter.AccessControlFilter
+import xyz.bogeum.filter.JwtAuthenticationFilter
 
 @EnableWebSecurity
 class SecurityConfig(
-    val jwtProvider: JwtProvider,
     val jwtAuthenticationFilter: JwtAuthenticationFilter,
     val accessControlFilter: AccessControlFilter
 ) {
@@ -43,7 +41,7 @@ class SecurityConfig(
             .anyRequest().permitAll()
             .and()
 
-            .exceptionHandling().authenticationEntryPoint(JwtAuthEntryPoint(jwtProvider))
+            .exceptionHandling().authenticationEntryPoint(JwtAuthEntryPoint())
             .and()
 
             .addFilterBefore(accessControlFilter, UsernamePasswordAuthenticationFilter::class.java)

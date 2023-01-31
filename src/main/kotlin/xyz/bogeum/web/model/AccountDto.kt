@@ -3,7 +3,7 @@ package xyz.bogeum.web.model
 import xyz.bogeum.enum.LoginPlatform
 import xyz.bogeum.enum.UserRole
 import xyz.bogeum.web.entity.AccountEntity
-import java.util.UUID
+import java.util.*
 
 class AccountDto(
     val id: UUID,

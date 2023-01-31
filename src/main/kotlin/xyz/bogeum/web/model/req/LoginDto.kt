@@ -4,7 +4,7 @@ import javax.validation.constraints.Email
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Pattern
 
-class Signup(
+class LoginDto(
     @Email
     @NotBlank
     val email: String,

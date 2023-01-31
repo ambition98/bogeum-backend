@@ -2,13 +2,14 @@ package xyz.bogeum.web.entity
 
 import xyz.bogeum.enum.LoginPlatform
 import xyz.bogeum.enum.UserRole
-import java.util.UUID
+import java.util.*
 import javax.persistence.*
 
 @Entity(name = "ACCOUNT")
 @Table
 class AccountEntity (
     @Id
+    @Column(columnDefinition = "BINARY(16)")
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: UUID = UUID.randomUUID(),
 

@@ -4,20 +4,16 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import xyz.bogeum.util.CookieUtil
 import xyz.bogeum.util.logger
 import javax.servlet.http.HttpServletRequest
 
 @RestController
-class TestController(
-    private val cookieUtil: CookieUtil,
-) {
+class TestController {
 
     private final val encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder()
-
-    val log = logger()
+    private final val log = logger()
 
     @GetMapping("/test")
     fun getTest() {

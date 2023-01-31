@@ -4,7 +4,6 @@ import org.json.JSONObject
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import xyz.bogeum.util.FileUtil
-import xyz.bogeum.util.logger
 
 @Component
 class Secret(

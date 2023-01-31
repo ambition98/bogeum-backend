@@ -2,7 +2,7 @@ package xyz.bogeum.web.entity
 
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
-import java.util.Date
+import java.util.*
 import javax.persistence.Column
 import javax.persistence.MappedSuperclass
 

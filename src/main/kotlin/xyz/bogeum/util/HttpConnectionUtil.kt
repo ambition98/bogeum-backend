@@ -1,7 +1,6 @@
 package xyz.bogeum.util
 
 import org.springframework.stereotype.Component
-import xyz.bogeum.exception.GoogleApiException
 import java.io.BufferedReader
 import java.io.DataOutputStream
 import java.io.InputStream
@@ -11,7 +10,7 @@ import java.net.URL
 
 @Component
 class HttpConnectionUtil {
-    private val log = logger()
+    private final val log = logger()
 
     fun getPostConnection(url: URL, postData: ByteArray) : HttpURLConnection {
         val conn = url.openConnection() as HttpURLConnection

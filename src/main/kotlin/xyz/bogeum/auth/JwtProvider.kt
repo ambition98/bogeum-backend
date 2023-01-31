@@ -7,9 +7,7 @@ import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.security.Keys
 import org.springframework.security.authentication.AnonymousAuthenticationToken
 import org.springframework.security.core.Authentication
-import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.authority.SimpleGrantedAuthority
-import org.springframework.security.web.authentication.AnonymousAuthenticationFilter
 import org.springframework.stereotype.Component
 import xyz.bogeum.enum.UserRole
 import xyz.bogeum.util.CookieUtil
@@ -28,8 +26,8 @@ class JwtProvider(
     private val keyString: String
     private val key: Key
     private val parser: JwtParser
-    //    private val accessTokenExpiryMs: Long = 1800000 //30분
-    private val accessTokenExpiryMs: Long = 3000
+        private val accessTokenExpiryMs: Long = 1800000 //30분
+//    private val accessTokenExpiryMs: Long = 3000
 //    private val refreshTokenExpiryMs: Long = 10000
     private val refreshTokenExpiryMs: Long = 259200000 //3일
     private val authoritiesKey = "role"
@@ -49,23 +47,26 @@ class JwtProvider(
 
     fun setTokenToCookie(resp: HttpServletResponse, id: UUID) = cookieUtil.setCookie(resp, cookieName, makeUserToken(id))
 
-    fun makeAuthentication(token: String): Authentication {
+    fun makeAuthentication(token: String?): Authentication
+    = try {
+        if (token == null) throw Exception()
         val claims = getTokenClaims(token)
         val authorities = listOf(SimpleGrantedAuthority(claims[authoritiesKey].toString()))
-        val role = claims[authoritiesKey]
-        val auth = if (role != null) {
-            BogeumAuthentication(role, token, authorities)
-        } else { //토큰 role 클레임이 변경되었을 경우 익명사용자인증 반환
-            AnonymousAuthenticationToken(
-                UUID.randomUUID().toString(), "anonymousUser",
-                listOf(SimpleGrantedAuthority("ROLE_ANONYMOUS"))
-            )
-        }
-
-        return BogeumAuthentication(auth, token, authorities)
+        val role = claims[authoritiesKey]!!
+        BogeumAuthentication(role, token, authorities)
+    } catch(e: Exception) {
+        AnonymousAuthenticationToken(
+            UUID.randomUUID().toString(), "anonymousUser",
+            listOf(SimpleGrantedAuthority("ROLE_ANONYMOUS"))
+        )
     }
 
-    fun getId(token: String): String = getTokenClaims(token).id
+    fun getId(token: String): String?
+    = try {
+        getTokenClaims(token).id
+    } catch (e: Exception) {
+        null
+    }
 
     fun getState(token: String?) = try {
         getTokenClaims(token ?: "") //null 일 경우 Invalid
@@ -75,7 +76,7 @@ class JwtProvider(
 
     fun getTokenFromCookie(req: HttpServletRequest) = cookieUtil.getCookie(req, cookieName)?.value
 
-    fun deleteTokenAtCookie(req: HttpServletRequest, resp: HttpServletResponse)
+    fun deleteTokenAtCookie(resp: HttpServletResponse)
     = cookieUtil.deleteCookie(resp, cookieName)
 
     private fun generateToken(id: UUID, subject: String, role: UserRole, expiryMs: Long): String {
@@ -90,5 +91,6 @@ class JwtProvider(
             .compact()
     }
 
+    // JWT parse 하는 과정에서 유효성 검증 후 유효하지 않으면 해당 Exception 발생
     private fun getTokenClaims(token: String) = parser.parseClaimsJws(token).body
 }

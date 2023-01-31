@@ -1,7 +1,6 @@
 package xyz.bogeum.util.third_party_api
 
 import org.json.JSONObject
-import org.springframework.core.env.Environment
 import org.springframework.stereotype.Component
 import xyz.bogeum.auth.Secret
 import xyz.bogeum.exception.GoogleApiException
