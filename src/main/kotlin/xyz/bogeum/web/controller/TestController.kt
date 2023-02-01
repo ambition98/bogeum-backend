@@ -1,5 +1,6 @@
 package xyz.bogeum.web.controller
 
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.web.bind.annotation.GetMapping
@@ -10,17 +11,21 @@ import xyz.bogeum.util.logger
 import javax.servlet.http.HttpServletRequest
 
 @RestController
-class TestController {
+class TestController(
+    private val publisher: ApplicationEventPublisher
+) {
 
     private final val encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder()
     private final val log = logger()
 
     @GetMapping("/test")
-    fun getTest() {
-//        log.info("Get Test")
-//        log.info("auth: ${SecurityContextHolder.getContext().authentication}")
-        log.info(encoder.encode("a"))
-        log.info(encoder.encode("aaa"))
+    fun getTest(name: String) {
+        log.info("/test, name: $name")
+        testEventMethod(name)
+    }
+
+    private fun testEventMethod(name: String) {
+        publisher.publishEvent(TestEvent(name))
     }
 
     @PostMapping("/test")
