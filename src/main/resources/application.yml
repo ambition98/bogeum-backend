@@ -1,11 +1,21 @@
 spring:
   kafka:
-    consumer:
-      bootstrap-servers: 192.168.1.12:9092
-      group-id: group1
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    bootstrap-servers: danylee.xyz:9092
+    producer:
+      bootstrap-servers: danylee.xyz:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+  #    consumer:
+#      bootstrap-servers: danylee.xyz:9092
+#      group-id: group1
+#      auto-offset-reset: earliest
+#      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+#      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+  redis:
+    host: 192.168.1.12
+    port: 6379
+
   config:
     activate:
       on-profile:

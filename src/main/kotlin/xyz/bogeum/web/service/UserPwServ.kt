@@ -5,7 +5,6 @@ import xyz.bogeum.web.entity.UserPwEntity
 import xyz.bogeum.web.repository.UserPwRepo
 import java.util.*
 
-@Service
 class UserPwServ(
     private val userPwRepo: UserPwRepo
 ) {

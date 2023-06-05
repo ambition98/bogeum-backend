@@ -1,5 +1,6 @@
 package xyz.bogeum.web.service
 
+import org.apache.commons.lang3.RandomStringUtils
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -8,6 +9,8 @@ import xyz.bogeum.auth.JwtState
 import xyz.bogeum.enum.LoginPlatform
 import xyz.bogeum.exception.DataNotFoundException
 import xyz.bogeum.exception.IncorrectLoginInfoException
+import xyz.bogeum.redis.entity.VerifyAccount
+import xyz.bogeum.redis.repo.VerifyAccountRepo
 import xyz.bogeum.util.logger
 import xyz.bogeum.web.entity.AccountEntity
 import xyz.bogeum.web.entity.UserPwEntity
@@ -23,7 +26,9 @@ import javax.servlet.http.HttpServletResponse
 class AccountServ(
     private val accountRepo: AccountRepo,
     private val userPwRepo: UserPwRepo,
-    private val jwtProvider: JwtProvider
+    private val jwtProvider: JwtProvider,
+    private val kafkaProducer: KafkaProducer,
+    private val verifyAccountRepo: VerifyAccountRepo
 ) {
     private final val log = logger()
     private final val passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder()
@@ -42,6 +47,7 @@ class AccountServ(
             throw IncorrectLoginInfoException("이미 존재하는 이메일입니다")
 
         entity.refreshToken = jwtProvider.makeRefreshToken(entity.id)
+        entity.isVerified = true
 
         val result = accountRepo.save(entity)
         jwtProvider.setTokenToCookie(resp, result.id)
@@ -56,7 +62,8 @@ class AccountServ(
         val userPw = userPwRepo.findById(accountEntity.id).get()
 
         if (!passwordEncoder.matches(login.password, userPw.digest))
-            throw IncorrectLoginInfoException("이메일 혹은 비밀번호가 틀립니다")
+            throw IncorrectLoginInfoException("이메일 혹은 비밀번호가 틀" +
+                    "립니다")
 
         jwtProvider.setTokenToCookie(resp, accountEntity.id)
 
@@ -94,11 +101,26 @@ class AccountServ(
                 it.refreshToken = jwtProvider.makeRefreshToken(it.id)
             }
         val accountRes = accountRepo.save(accountEntity)
-
         val userPwEntity = UserPwEntity(accountRes.id, digest)
+        val code = RandomStringUtils.random(6, false, true)
+
         userPwRepo.save(userPwEntity)
         jwtProvider.setTokenToCookie(resp, accountRes.id)
 
+        //Publish to Kafka
+        kafkaProducer.sendVerifyEmail(signup.email, code)
+
+        //Save to Redis
+        verifyAccountRepo.save(VerifyAccount(userPwEntity.id, code))
+
         return AccountDto.build(accountRes)
     }
+
+//    fun verify(id: UUID, code: String): Boolean {
+//        val verifyAccount = verifyAccountRepo.findById(id)
+//            ?: throw ExpiredVerifyCode("인증코드가 만료되었습니다.")
+//
+//
+//
+//    }
 }
