@@ -3,6 +3,7 @@ package xyz.bogeum.util.third_party_api
 import org.json.JSONObject
 import org.springframework.stereotype.Component
 import xyz.bogeum.auth.Secret
+import xyz.bogeum.enum.RespCode
 import xyz.bogeum.exception.GoogleApiException
 import xyz.bogeum.util.HttpConnectionUtil
 import xyz.bogeum.util.logger
@@ -35,7 +36,7 @@ class GoogleApi(
         log.info(respJson.toString())
 
         return if (respJson.has("access_token")) respJson.getString("access_token")
-            else throw GoogleApiException(respJson.getString("error"))
+            else throw GoogleApiException(RespCode.FAIL_TO_GOOGLE_API.status, "${RespCode.FAIL_TO_GOOGLE_API.desc} - ${respJson.getString("error")}")
     }
 
     fun getEmail(tk: String): String {
@@ -46,7 +47,7 @@ class GoogleApi(
         val respJson = JSONObject(httpConnectionUtil.getResponse(conn))
 
         return if (respJson.has("email")) respJson.getString("email")
-            else throw GoogleApiException(respJson.getString("error"))
+            else throw GoogleApiException(RespCode.FAIL_TO_GOOGLE_API.status, "${RespCode.FAIL_TO_GOOGLE_API.desc} - ${respJson.getString("error")}")
     }
 
     private fun isLocalhost():Boolean {

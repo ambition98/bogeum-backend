@@ -1,12 +1,11 @@
 package xyz.bogeum.web.controller
 
-import com.test.springkotlin.response.CommonResponse
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import xyz.backup_isedol_clip.makeResp
 import xyz.bogeum.auth.JwtProvider
+import xyz.bogeum.enum.RespCode
 import xyz.bogeum.util.logger
 import xyz.bogeum.web.model.req.LoginDto
 import xyz.bogeum.web.service.AccountServ
@@ -32,19 +31,18 @@ class AuthController(
     }
 
     @PostMapping("/login")
-    fun login(@RequestBody login: LoginDto, resp:HttpServletResponse): ResponseEntity<CommonResponse>
-    = makeResp(HttpStatus.OK, "Success", accountServ.login(login, resp))
+    fun login(@RequestBody login: LoginDto, resp:HttpServletResponse)
+    = makeResp(RespCode.OK.status, RespCode.OK.desc, accountServ.login(login, resp))
 
     @PostMapping("/signup")
-    fun signup(@RequestBody signup: LoginDto, resp: HttpServletResponse): ResponseEntity<CommonResponse> {
-        return makeResp(HttpStatus.OK, "Success", accountServ.signup(signup, resp))
-    }
+    fun signup(@RequestBody signup: LoginDto, resp: HttpServletResponse)
+    = makeResp(RespCode.OK.status, RespCode.OK.desc, accountServ.signup(signup, resp))
 
     @GetMapping("/exists")
     fun checkEmailDuplicated(@Email @NotBlank email: String, resp: HttpServletResponse)
     = if (accountServ.existsByEmail(email))
-        resp.status = HttpStatus.CONFLICT.value()
+        makeResp(RespCode.AVAILABLE_EMAIL.status, RespCode.AVAILABLE_EMAIL.desc)
     else
-        resp.status = HttpStatus.OK.value()
+        makeResp(RespCode.DUPLICATED_EMAIL.status, RespCode.DUPLICATED_EMAIL.desc)
 }
 

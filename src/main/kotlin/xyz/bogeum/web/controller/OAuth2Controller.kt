@@ -1,13 +1,13 @@
 package xyz.bogeum.web.controller
 
 import com.test.springkotlin.response.CommonResponse
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import xyz.backup_isedol_clip.makeResp
 import xyz.bogeum.enum.LoginPlatform
+import xyz.bogeum.enum.RespCode
 import xyz.bogeum.util.logger
 import xyz.bogeum.util.third_party_api.GoogleApi
 import xyz.bogeum.web.service.AccountServ
@@ -32,6 +32,6 @@ class OAuth2Controller(
         val user = accountServ.socialLogin(resp, email, LoginPlatform.GOOGLE)
         log.info("email: ${user.email}")
 
-        return makeResp(HttpStatus.OK, "Success", user)
+        return makeResp(RespCode.OK.status, RespCode.OK.desc, user)
     }
 }

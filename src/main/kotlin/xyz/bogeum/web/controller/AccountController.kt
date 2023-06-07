@@ -1,11 +1,12 @@
 package xyz.bogeum.web.controller
 
-import org.springframework.http.HttpStatus
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import xyz.backup_isedol_clip.makeResp
 import xyz.bogeum.auth.JwtProvider
+import xyz.bogeum.enum.RespCode
 import xyz.bogeum.util.logger
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -19,7 +20,13 @@ class AccountController(
     val log = logger()
 
     @GetMapping("/verify")
-    fun verify(resp: HttpServletResponse) { resp.status = HttpStatus.OK.value() }
+    fun verify(resp: HttpServletResponse)
+    = makeResp(RespCode.VALID_JWT.status, RespCode.VALID_JWT.desc)
+
+    @GetMapping("/verify-email")
+    fun verifyEmail(resp: HttpServletResponse) {
+
+    }
 
     @GetMapping("/test")
     fun test(req: HttpServletRequest) {

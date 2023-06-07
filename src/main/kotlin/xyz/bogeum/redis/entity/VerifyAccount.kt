@@ -7,6 +7,6 @@ import javax.persistence.Id
 @RedisHash(value = "verify", timeToLive = 300)
 class VerifyAccount(
     @Id
-    private val id: UUID,
-    private val code: String
+    val id: UUID,
+    val code: String
 )

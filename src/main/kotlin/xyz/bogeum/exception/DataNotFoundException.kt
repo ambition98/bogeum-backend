@@ -1,3 +1,5 @@
 package xyz.bogeum.exception
 
-class DataNotFoundException(msg: String) : Exception(msg)
+import org.springframework.http.HttpStatus
+
+class DataNotFoundException(status: HttpStatus, msg: String) : ResponseException(status, msg)

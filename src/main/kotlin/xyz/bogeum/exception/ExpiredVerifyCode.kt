@@ -1,3 +1,5 @@
 package xyz.bogeum.exception
 
-class ExpiredVerifyCode(msg: String) : Exception(msg)
+import org.springframework.http.HttpStatus
+
+class ExpiredVerifyCode(status: HttpStatus, msg: String) : ResponseException(status, msg)

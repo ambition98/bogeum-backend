@@ -27,26 +27,5 @@ class JwtAuthEntryPoint : AuthenticationEntryPoint {
         out.print(response)
         out.flush()
         out.close()
-
-//        val token = jwtProvider.getTokenFromCookie(req)
-//        log.info("[EntryPoint] token: $token")
-//        log.info("[EntryPoint] auth: ${SecurityContextHolder.getContext().authentication}")
-
-//        val response = when (jwtProvider.getState(token)) {
-//            JwtState.EXPIRED -> {
-//                resp.status = HttpStatus.UNAUTHORIZED.value()
-//                log.info("Expired Jwt")
-//                "{httpStatus: ${HttpStatus.UNAUTHORIZED}, msg: Expired access token"
-//            }
-//            else -> {
-//                resp.status = HttpStatus.BAD_REQUEST.value()
-//                log.warn("Invalid Jwt")
-//                "{httpStatus: ${HttpStatus.BAD_REQUEST}, msg: Need Login"
-//            }
-//        }
     }
-
-//    private fun makeResponseJson(httpStatus: HttpStatus, msg: String): String {
-//        return "{httpStatus: $httpStatus, msg: $msg}"
-//    }
 }

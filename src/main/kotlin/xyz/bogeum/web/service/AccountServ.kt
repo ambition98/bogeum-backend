@@ -7,8 +7,11 @@ import org.springframework.transaction.annotation.Transactional
 import xyz.bogeum.auth.JwtProvider
 import xyz.bogeum.auth.JwtState
 import xyz.bogeum.enum.LoginPlatform
+import xyz.bogeum.enum.RespCode
 import xyz.bogeum.exception.DataNotFoundException
+import xyz.bogeum.exception.ExpiredVerifyCode
 import xyz.bogeum.exception.IncorrectLoginInfoException
+import xyz.bogeum.exception.InvalidVerifyCode
 import xyz.bogeum.redis.entity.VerifyAccount
 import xyz.bogeum.redis.repo.VerifyAccountRepo
 import xyz.bogeum.util.logger
@@ -44,7 +47,7 @@ class AccountServ(
             ?: AccountEntity(email = email, loginPlatform = loginPlatform)
 
         if (entity.loginPlatform != loginPlatform)
-            throw IncorrectLoginInfoException("이미 존재하는 이메일입니다")
+            throw IncorrectLoginInfoException(RespCode.INVALID_LOGIN_INFO.status, RespCode.INVALID_LOGIN_INFO.desc)
 
         entity.refreshToken = jwtProvider.makeRefreshToken(entity.id)
         entity.isVerified = true
@@ -57,13 +60,12 @@ class AccountServ(
 
     fun login(login: LoginDto, resp: HttpServletResponse): AccountDto {
         val accountEntity = accountRepo.findByEmail(login.email)
-            ?: throw IncorrectLoginInfoException("이메일 혹은 비밀번호가 틀립니다")
+            ?: throw IncorrectLoginInfoException(RespCode.INVALID_LOGIN_INFO.status, RespCode.INVALID_LOGIN_INFO.desc)
 
         val userPw = userPwRepo.findById(accountEntity.id).get()
 
         if (!passwordEncoder.matches(login.password, userPw.digest))
-            throw IncorrectLoginInfoException("이메일 혹은 비밀번호가 틀" +
-                    "립니다")
+            throw IncorrectLoginInfoException(RespCode.INVALID_LOGIN_INFO.status, RespCode.INVALID_LOGIN_INFO.desc)
 
         jwtProvider.setTokenToCookie(resp, accountEntity.id)
 
@@ -116,11 +118,11 @@ class AccountServ(
         return AccountDto.build(accountRes)
     }
 
-//    fun verify(id: UUID, code: String): Boolean {
-//        val verifyAccount = verifyAccountRepo.findById(id)
-//            ?: throw ExpiredVerifyCode("인증코드가 만료되었습니다.")
-//
-//
-//
-//    }
+    fun verifyEmail(id: UUID, code: String) {
+        val verifyAccount = verifyAccountRepo.findById(id)
+            ?: throw ExpiredVerifyCode(RespCode.EXPIRED_EMAIL_VERIFY_CODE.status, RespCode.EXPIRED_EMAIL_VERIFY_CODE.desc)
+
+        if (verifyAccount.code != code)
+            throw InvalidVerifyCode(RespCode.INVALID_EMAIL_VERIFY_CODE.status, RespCode.INVALID_EMAIL_VERIFY_CODE.desc)
+    }
 }

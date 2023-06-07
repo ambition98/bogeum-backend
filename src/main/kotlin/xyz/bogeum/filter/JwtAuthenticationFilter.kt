@@ -23,7 +23,7 @@ class JwtAuthenticationFilter(
         var jwt = jwtProvider.getTokenFromCookie(req)
         log.info("jwt: $jwt")
 
-        if (jwt != null && jwt.isNotEmpty()) {
+        if (!jwt.isNullOrEmpty()) {
             if (jwtProvider.getState(jwt) == JwtState.EXPIRED) {
                 jwt = accountServ.refreshAccessToken(req, resp)
             }

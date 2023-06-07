@@ -1,17 +1,13 @@
 package xyz.bogeum.exception.handler
 
-import com.test.springkotlin.response.CommonResponse
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import xyz.backup_isedol_clip.makeResp
-import xyz.bogeum.exception.GoogleApiException
-import xyz.bogeum.exception.IncorrectLoginInfoException
+import xyz.bogeum.enum.RespCode
 import xyz.bogeum.exception.OAuthAuthorityDeniedException
+import xyz.bogeum.exception.ResponseException
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
-import javax.validation.ConstraintViolationException
 
 @RestControllerAdvice(basePackages = ["xyz.bogeum.web.controller"])
 class GlobalExceptionHandler {
@@ -25,14 +21,22 @@ class GlobalExceptionHandler {
             resp.sendRedirect("https://$serverName")
     }
 
-    @ExceptionHandler(
-        GoogleApiException::class,
-        ConstraintViolationException::class,
-        IncorrectLoginInfoException::class
-    )
-    fun badRequestHandler(e: Exception): ResponseEntity<CommonResponse> {
-        return makeResp(HttpStatus.BAD_REQUEST, e.message!!)
-    }
+    @ExceptionHandler(ResponseException::class)
+    fun customExceptionHandler(e: ResponseException)
+    = makeResp(e.status, e.message!!)
 
+    @ExceptionHandler(Exception::class)
+    fun unknownExceptionHandler(e: Exception)
+    = makeResp(RespCode.UNKNOWN_SERVER_ERROR.status, RespCode.UNKNOWN_SERVER_ERROR.desc)
 
+//    @ExceptionHandler(
+//        GoogleApiException::class,
+//        ConstraintViolationException::class,
+//        IncorrectLoginInfoException::class,
+//        ExpiredVerifyCode::class,
+//        InvalidVerifyCode::class
+//    )
+//    fun badRequestHandler(e: Exception): ResponseEntity<CommonResponse> {
+//        return makeResp(HttpStatus.BAD_REQUEST, e.message!!)
+//    }
 }
