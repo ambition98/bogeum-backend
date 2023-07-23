@@ -38,7 +38,7 @@ class AccountServ(
 
 //    fun getByEmail(email: String) = accountRepo.findByEmail(email)
 
-    fun getById(id: UUID) = try { accountRepo.findById(id).get() } catch (e: DataNotFoundException) { null }
+    fun getById(id: String) = try { accountRepo.findById(id).get() } catch (e: DataNotFoundException) { null }
 
     fun existsByEmail(email: String) = accountRepo.existsByEmail(email)
 
@@ -83,8 +83,9 @@ class AccountServ(
 
     fun refreshAccessToken(req: HttpServletRequest, resp: HttpServletResponse): String? {
         val jwt = jwtProvider.getTokenFromCookie(req) ?: return null
-        val idString = jwtProvider.getId(jwt) ?: return null
-        val id = UUID.fromString(idString)
+//        val idString = jwtProvider.getId(jwt) ?: return null
+//        val id = UUID.fromString(idString)
+        val id = jwtProvider.getId(jwt) ?: return null
         val entity = getById(id) ?: return null
 
         if (jwtProvider.getState(entity.refreshToken) == JwtState.OK) {
