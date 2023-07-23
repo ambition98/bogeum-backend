@@ -1,12 +1,13 @@
 package xyz.bogeum.web.model
 
+import de.huxhorn.sulky.ulid.ULID
 import xyz.bogeum.enum.LoginPlatform
 import xyz.bogeum.enum.UserRole
 import xyz.bogeum.web.entity.AccountEntity
 import java.util.*
 
 class AccountDto(
-    val id: UUID,
+    val id: String,
     val email: String,
     val isVerified: Boolean,
     val loginPlatform: LoginPlatform,

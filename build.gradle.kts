@@ -30,6 +30,7 @@ dependencies {
     implementation("com.h2database:h2")
     implementation("org.springframework.kafka:spring-kafka")
     implementation("org.apache.commons:commons-lang3:3.12.0")
+    implementation("de.huxhorn.sulky:de.huxhorn.sulky.ulid:8.3.0")
 
 
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
@@ -38,7 +39,6 @@ dependencies {
     testImplementation("com.h2database:h2:2.1.214")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
-
 }
 
 tasks.withType<KotlinCompile> {
@@ -50,4 +50,8 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.named<Jar>("jar") {
+    enabled = false
 }

@@ -39,13 +39,13 @@ class JwtProvider(
         parser = Jwts.parserBuilder().setSigningKey(key).build()
     }
 
-    fun makeUserToken(id: UUID) = generateToken(id, "Access Token", UserRole.USER, accessTokenExpiryMs)
+    fun makeUserToken(id: String) = generateToken(id, "Access Token", UserRole.USER, accessTokenExpiryMs)
 
-    fun makeAdminToken(id: UUID) = generateToken(id, "Access Token", UserRole.ADMIN, accessTokenExpiryMs)
+    fun makeAdminToken(id: String) = generateToken(id, "Access Token", UserRole.ADMIN, accessTokenExpiryMs)
 
-    fun makeRefreshToken(id: UUID) = generateToken(id, "Refresh Token", UserRole.USER, refreshTokenExpiryMs)
+    fun makeRefreshToken(id: String) = generateToken(id, "Refresh Token", UserRole.USER, refreshTokenExpiryMs)
 
-    fun setTokenToCookie(resp: HttpServletResponse, id: UUID) = cookieUtil.setCookie(resp, cookieName, makeUserToken(id))
+    fun setTokenToCookie(resp: HttpServletResponse, id: String) = cookieUtil.setCookie(resp, cookieName, makeUserToken(id))
 
     fun makeAuthentication(token: String?): Authentication
     = try {
@@ -79,11 +79,11 @@ class JwtProvider(
     fun deleteTokenAtCookie(resp: HttpServletResponse)
     = cookieUtil.deleteCookie(resp, cookieName)
 
-    private fun generateToken(id: UUID, subject: String, role: UserRole, expiryMs: Long): String {
+    private fun generateToken(id: String, subject: String, role: UserRole, expiryMs: Long): String {
         val currentTime = Date()
         return Jwts.builder()
             .setSubject(subject)
-            .setId(id.toString())
+            .setId(id)
             .setIssuedAt(Date())
             .signWith(key, SignatureAlgorithm.HS256)
             .setExpiration(Date(currentTime.time + expiryMs))

@@ -1,5 +1,6 @@
 package xyz.bogeum.web.entity
 
+import de.huxhorn.sulky.ulid.ULID
 import xyz.bogeum.enum.LoginPlatform
 import xyz.bogeum.enum.UserRole
 import java.util.*
@@ -9,9 +10,9 @@ import javax.persistence.*
 @Table
 class AccountEntity (
     @Id
-    @Column(columnDefinition = "BINARY(16)")
+    @Column(columnDefinition = "CHAR(36)")
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: UUID = UUID.randomUUID(),
+    val id: String = ULID().nextULID(),
 
     @Column(length = 50, nullable = false, unique = true)
     val email: String,

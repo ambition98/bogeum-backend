@@ -1,6 +1,6 @@
 package xyz.bogeum.web.entity
 
-import java.util.*
+import de.huxhorn.sulky.ulid.ULID
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
@@ -9,7 +9,7 @@ import javax.persistence.Id
 class UserPwEntity(
     @Id
     @Column(columnDefinition = "BINARY(16)")
-    val id: UUID = UUID.randomUUID(),
+    val id: String = ULID().nextULID(),
 
     @Column(length = 68, nullable = false)
     val digest: String
