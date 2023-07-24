@@ -6,6 +6,6 @@ spring:
 server:
   port: 443
   ssl:
-    key-store: ~/secret/keystore.p12
+    key-store: ${keyPath}
     key-store-type: PKCS12
-    key-store-password: ${sslpw}
+    key-store-password: ${sslPw}
