@@ -24,7 +24,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk+8")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.json:json:20220924")
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")
     implementation("com.h2database:h2")
